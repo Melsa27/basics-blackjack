@@ -1,14 +1,17 @@
 var deck;
+var shuffledDeck;
 
 var main = function (input) {
   deck = makeDeck();
+  shuffledDeck = shuffleCards(deck);
+  console.log("shuffledDeck", shuffledDeck);
 };
 
+//Helper Function 1 (Make Card Deck)
 //make 52 cards
 //rank 1-13
 //1-4 suits hearts, diamonds, clubs, spades
 //1-10 and jack, queen, king and ace
-
 var makeDeck = function () {
   // Initialise an empty deck array
   var cardDeck = [];
@@ -66,4 +69,29 @@ var makeDeck = function () {
   return cardDeck;
 };
 
-//var deck = makeDeck();
+//Helper Function 2 - Simulates card shuffling
+// Get a random index ranging from 0 (inclusive) to max (exclusive).
+var getRandomIndex = function (max) {
+  return Math.floor(Math.random() * max);
+};
+
+// Shuffle the elements in the cardDeck array
+var shuffleCards = function (cardDeck) {
+  // Loop over the card deck array once
+  var currentIndex = 0;
+  while (currentIndex < cardDeck.length) {
+    // Select a random index in the deck
+    var randomIndex = getRandomIndex(cardDeck.length);
+    // Select the card that corresponds to randomIndex
+    var randomCard = cardDeck[randomIndex];
+    // Select the card that corresponds to currentIndex
+    var currentCard = cardDeck[currentIndex];
+    // Swap positions of randomCard and currentCard in the deck
+    cardDeck[currentIndex] = randomCard;
+    cardDeck[randomIndex] = currentCard;
+    // Increment currentIndex
+    currentIndex = currentIndex + 1;
+  }
+  // Return the shuffled deck
+  return cardDeck;
+};
