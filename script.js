@@ -2,9 +2,13 @@ var deck;
 var shuffledDeck;
 
 var main = function (input) {
-  deck = makeDeck();
-  shuffledDeck = shuffleCards(deck);
-  console.log("shuffledDeck", shuffledDeck);
+  var deck = shuffleCards(makeDeck());
+  console.log("This is shuffledDeck", deck);
+  var playerCard = deck.pop().name + " of " + deck.pop().suit;
+  console.log("This is the last card:", deck.pop());
+  var myOutputValue = `This is your card: ${playerCard}`;
+  console.log("Selected card", playerCard);
+  return myOutputValue;
 };
 
 //Helper Function 1 (Make Card Deck)
