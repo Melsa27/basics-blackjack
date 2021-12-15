@@ -1,22 +1,73 @@
+// Deck is shuffled.
+// User clicks Submit to deal cards.
+// The cards are analysed for game winning conditions, e.g. Blackjack.
+// The cards are displayed to the user.
+// The user decides whether to hit or stand, using the submit button to submit their choice.
+// The user's cards are analysed for winning or losing conditions.
+// The computer decides to hit or stand automatically based on game rules.
+// The game either ends or continues.
+// for the main function to perform different logic on user input, for example when a player decides to hit or stand, we may wish to consider using a new game mode.
+// ---------------
+//First Version: Compare Initial Hands to Determine Winner
+//Second Version: Add Player Hit or Stand
+//Third Version: Add Dealer Hit or Stand
+//Fourth Version: Add Variable Ace Values
+// ----------------
+
+// ===== First verions =====//
+
+//assign var to different game mode
+var gameMode_gameStart = "game start";
+var gameMode_drawCards = "draw cards";
+var gameMode_compareResults = "compare cards";
+var gameMode_reset = "reset";
+var currentGameMode = gameMode_gameStart; // initial game mode
+//Player and Computer's hand
+var playerHand = [];
+var dealerHand = [];
+//Var to deck created and shuffled
 var deck;
 var shuffledDeck;
 
-var main = function (input) {
-  var deck = shuffleCards(makeDeck());
-  console.log("This is shuffledDeck", deck);
-  var playerCard = deck.pop().name + " of " + deck.pop().suit;
-  console.log("This is the last card:", deck.pop());
-  var myOutputValue = `This is your card: ${playerCard}`;
-  console.log("Selected card", playerCard);
+// ----Main function
+
+var main = function () {
+  var myOutputValue = "";
+  //When click submit at the start
+  if ((currentGameMode = gameMode_gameStart)) {
+    var deck = createNewDeck();
+    console.log("This is shuffledDeck", deck);
+
+    //Player and computer pick 2 cards from shuffled deck
+    playerHand.push(deck.pop());
+    playerHand.push(deck.pop());
+    dealerHand.push(deck.pop());
+    dealerHand.push(deck.pop());
+
+    console.log("This is player hand", playerHand);
+    console.log("This is computer hand", dealerHand);
+
+    //Switch game mode
+    currentGameMode = gameMode_drawCards;
+    myOutputValue =
+      "Both player and dealer has drawn 2 cards, please press submit to continue";
+  }
+
   return myOutputValue;
 };
 
-//Helper Function 1 (Make Card Deck)
+// var playerCard = deck.pop().name + " of " + deck.pop().suit;
+// console.log("This is the last card:", deck.pop());
+// var myOutputValue = `This is your card: ${playerCard}`;
+// console.log("Selected card", playerCard);
+// return myOutputValue;
+
+//===Helper Function 1 (Make Card Deck)
 //make 52 cards
 //rank 1-13
 //1-4 suits hearts, diamonds, clubs, spades
 //1-10 and jack, queen, king and ace
-var makeDeck = function () {
+function makeDeck() {
   // Initialise an empty deck array
   var cardDeck = [];
   // Initialise an array of the 4 suits in our deck. We will loop over this array.
@@ -71,9 +122,9 @@ var makeDeck = function () {
 
   // Return the completed card deck
   return cardDeck;
-};
+}
 
-//Helper Function 2 - Simulates card shuffling
+// ===Helper Function 2 - Simulates card shuffling
 // Get a random index ranging from 0 (inclusive) to max (exclusive).
 var getRandomIndex = function (max) {
   return Math.floor(Math.random() * max);
@@ -98,4 +149,11 @@ var shuffleCards = function (cardDeck) {
   }
   // Return the shuffled deck
   return cardDeck;
+};
+
+//===Helper function 3 - creates and shuffles
+var createNewDeck = function () {
+  var newDeck = makeDeck();
+  var shuffledDeck = shuffleCards(newDeck);
+  return shuffledDeck;
 };
