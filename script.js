@@ -18,7 +18,7 @@
 
 //assign var to different game mode
 var gameMode_gameStart = "game start";
-var gameMode_drawCards = "draw cards";
+var gameMode_cardsDrawn = "Cards drawn";
 var gameMode_compareResults = "compare cards";
 var gameMode_reset = "reset";
 var currentGameMode = gameMode_gameStart; // initial game mode
@@ -29,7 +29,67 @@ var dealerHand = [];
 var deck;
 var shuffledDeck;
 
-// ----Main function
+// -----Game Functions --------//
+//1 ----function to check for blackJack---//
+var checkForBlackJack = function () {
+  //check player hand
+  var playerCardOne = playerHand[0];
+  var playerCardTwo = playerHand[1];
+  var isBlackJack = false;
+  //Change it to true only when there is a blackjack condition
+  //First card ace, second card 10 or picture and vice versa
+
+  if (
+    (playerCardOne.name == "ace" && playerCardTwo.rank >= 10) ||
+    (playerCardOne.rank >= 10 && playerCardTwo.name == "ace")
+  ) {
+    isBlackJack = true;
+  }
+  return isBlackJack;
+};
+//----end of 1---//
+
+//2 -----function to check for player handvalue ----//
+var calculateTotalPlayerHandValue = function (playerHand) {
+  var totalPlayerHandValue = 0;
+  var index = 0;
+  while (index < playerHand.length) {
+    if (
+      playerHand[index].name == "jack" ||
+      playerHand[index].name == "queen" ||
+      playerHand[index].name == "king"
+    ) {
+      totalPlayerHandValue = totalPlayerHandValue + 10;
+    } else {
+      totalPlayerHandValue = totalPlayerHandValue + playerHand[index].rank;
+    }
+    index = index + 1;
+  }
+  return totalPlayerHandValue;
+};
+// ----end of 2 ----//
+
+//3------function to check for dealer handvalue -----//
+var calculateTotalDealerHandValue = function (dealerHand) {
+  var totalDealerHandValue = 0;
+  var index = 0;
+  while (index < dealerHand.length) {
+    if (
+      dealerHand[index].name == "jack" ||
+      dealerHand[index].name == "queen" ||
+      dealerHand[index].name == "king"
+    ) {
+      totalDealerHandValue = totalDealerHandValue + 10;
+    } else {
+      totalDealerHandValue = totalDealerHandValue + dealerHand[index].rank;
+    }
+    index = index + 1;
+  }
+  return totalDealerHandValue;
+};
+//-----end of 3------//
+
+// @@@@----Main function ---------@@@@@//
 
 var main = function () {
   var myOutputValue = "";
@@ -44,17 +104,87 @@ var main = function () {
     dealerHand.push(deck.pop());
     dealerHand.push(deck.pop());
 
-    console.log("This is player hand", playerHand);
-    console.log("This is computer hand", dealerHand);
+    // console.log("This is player hand", playerHand);
+    // console.log("This is computer hand", dealerHand);
 
     //Switch game mode
-    currentGameMode = gameMode_drawCards;
+    currentGameMode = gameMode_cardsDrawn;
     myOutputValue =
       "Both player and dealer has drawn 2 cards, please press submit to continue";
   }
 
-  return myOutputValue;
+  //When submit clicked for second time after cards drawnn.
+
+  if (currentGameMode == gameMode_cardsDrawn) {
+    //Check for blackjack
+    // playerHand = [
+    //   { name: "queen", suit: "clubs", rank: 12 },
+    //   { name: "ace", suit: "diamonds", rank: 1 },
+    // ];
+    // dealerHand = [
+    //   { name: "ace", suit: "clubs", rank: 1 },
+    //   { name: 10, suit: "spades", rank: 10 },
+    // ];
+    console.log("game mode 1", currentGameMode);
+
+    var playerHasBlackJack = checkForBlackJack(playerHand);
+    var dealerHasBlackJack = checkForBlackJack(dealerHand);
+    console.log("Does player have blackjack?", playerHasBlackJack);
+    console.log("Does dealer has blackjack?", dealerHasBlackJack);
+    //Scenario 1: When both blackjack - Tie
+    if (playerHasBlackJack == true || dealerHasBlackJack == true) {
+      myOutputValue = "Its a tie. Both Blackjack!";
+    }
+    //Scenario 2: When player blackjack - Playwer wins
+    if (playerHasBlackJack == true && dealerHasBlackJack == false) {
+      myOutputValue = "Player wins. BlackJack!";
+    }
+    //Scenario 3: When dealer blackjack - Dealer Wins
+    if (playerHasBlackJack == false && dealerHasBlackJack == true) {
+      myOutputValue = "Dealer wins. BlackJack!";
+    } else {
+      //no blackjack, games continue
+      var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
+      var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
+
+      if (totalPlayerHandValue == totalDealerHandValue) {
+        myOutputValue = `"Its a tie this is player total value and dealer total value",
+          ${totalPlayerHandValue}, ${totalDealerHandValue}`;
+        console.log(
+          "its a tie, this is player total value and dealer total value",
+          totalPlayerHandValue,
+          totalDealerHandValue
+        );
+      }
+      if (totalPlayerHandValue > totalDealerHandValue) {
+        myOutputValue = `"Player wins! This is player total value and dealer total value",
+       ${totalPlayerHandValue}, ${totalDealerHandValue}`;
+        console.log(
+          "Player wins! This is player total value and dealer total value",
+          totalPlayerHandValue,
+          totalDealerHandValue
+        );
+      }
+      if (totalDealerHandValue > totalPlayerHandValue) {
+        myOutputValue = `"Dealer wins!" This is player total value and dealer total value",
+   ${totalPlayerHandValue}, ${totalDealerHandValue}`;
+        console.log(
+          "Dealer wins! This is player total value and dealer total value",
+          totalPlayerHandValue,
+          totalDealerHandValue
+        );
+      }
+    }
+    return myOutputValue;
+  }
 };
+
+//Scenario 4a: Same value - Tie
+//Scenario 4b: Player value > dealer value - player wins
+//Scenario 4c: Dealer value > player value - dealer wins
+
+//change game mode
+//output message
 
 // var playerCard = deck.pop().name + " of " + deck.pop().suit;
 // console.log("This is the last card:", deck.pop());
@@ -78,7 +208,7 @@ function makeDeck() {
   while (suitIndex < suits.length) {
     // Store the current suit in a variable
     var currentSuit = suits[suitIndex];
-    console.log("This is the curent suit", currentSuit);
+    // console.log("This is the curent suit", currentSuit);
 
     // Loop from 1 to 13 to create all cards for a given suit
     // Notice rankCounter starts at 1 and not 0, and ends at 13 and not 12.
@@ -87,7 +217,7 @@ function makeDeck() {
     while (rankCounter <= 13) {
       // By default, the card name is the same as rankCounter from 2 to 10
       var cardName = rankCounter;
-      console.log("This is the cardName", cardName);
+      // console.log("This is the cardName", cardName);
 
       //These are special cases where card name is not from 2 to 10. If rank is 1 (ace), 11 (jack), 12 (Queen), or 13(King), set cardName to the ace or face card's name
       if (cardName == 1) {
@@ -106,11 +236,11 @@ function makeDeck() {
         suit: currentSuit,
         rank: rankCounter,
       };
-      console.log("This is the card", card);
+      // console.log("This is the card", card);
       // // Add the new card to the deck
       cardDeck.push(card);
 
-      console.log("This is the card deck", cardDeck);
+      // console.log("This is the card deck", cardDeck);
 
       // Increment rankCounter to iterate over the next rank
       rankCounter += 1;
