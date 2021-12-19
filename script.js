@@ -32,15 +32,8 @@ var deck;
 var shuffledDeck;
 // Keep track of when the game ends to prevent further moves
 var gameOver = false;
-
-// The maximum valid sum in Blackjack is 21.
-// name a constant integer value so that our logic is clear
-var TWENTY_ONE = 21;
-
 // The dealer has to hit if their hand is below 17.
 var dealerHitThreshold = 17;
-// If player has chosen to stand, then player can no longer hit until game is over
-var playerHasChosenToStand = false;
 
 // -----Game Functions --------//
 //1 ----function to check for blackJack---//
@@ -119,6 +112,8 @@ var main = function (input) {
     dealerHand.push(deck.pop());
     dealerHand.push(deck.pop());
 
+    console.log("This is dealerHand at start", dealerHand);
+
     //The cards are analyzed for Blackjack
     // Winner will be annouced and game ends here if anyone has Blackjack
 
@@ -153,7 +148,7 @@ var main = function (input) {
       console.log("This is dealerhand", dealerHand[1]);
       //Switch game mode to display player's cards and to choose hit or stand
       currentGameMode = gameMode_hitOrStand;
-      myOutputValue = `Player, this is your hand${playerHandDisplayed}. This is one of Dealer's ${dealerHand[1].rank} of ${dealerHand[1].suit} card <br> Please enter "hit" or "stand", then press Submit`;
+      myOutputValue = `Player, this is your hand: ${playerHandDisplayed}. <br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br> Please enter "hit" or "stand", then press Submit`;
       return myOutputValue;
     }
 
@@ -171,41 +166,54 @@ var main = function (input) {
       console.log("This is player hand after hit", playerHand);
       myOutputValue = `Player, this is your hand ${playerHandDisplayed}`;
     }
+
+    //Calculate current total ---------------------------------------------
+    var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
+    var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
+
     // computer hit or stand -------------------------------------------------
     if (totalDealerHandValue < dealerHitThreshold) {
       // dealer draw a card
       dealerHand.push(deck.pop());
+      console.log("This is dealerHand after drawing third card", dealerHand);
     }
     // compare and decide winner -------------------------------------------------
 
-    var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
-    var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
-
-    if (totalPlayerHandValue == totalDealerHandValue) {
-      myOutputValue = `Its a tie <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
-      console.log(
-        "its a tie, this is player total value and dealer total value",
-        totalPlayerHandValue,
-        totalDealerHandValue,
-        getCardsOutput()
-      );
+    if (totalPlayerHandValue > 21 && totalDealerHandValue < 21) {
+      myOutputValue = `Dealer Wins. Player bust with ${totalPlayerHandValue}!`;
     }
-    if (totalPlayerHandValue > totalDealerHandValue) {
-      myOutputValue = `"Player wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
-
-      console.log(
-        "Player wins! This is player total value and dealer total value",
-        totalPlayerHandValue,
-        totalDealerHandValue,
-        getCardsOutput()
-      );
+    if (totalPlayerHandValue < 21 && totalDealerHandValue > 21) {
+      myOutputValue = `Dealer bust with ${totalDealerHandValue}. Player wins!`;
     }
-    if (totalDealerHandValue > totalPlayerHandValue) {
-      myOutputValue = `"Dealer wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+    if (totalPlayerHandValue > 21 && totalDealerHandValue > 21) {
+      myOutputValue = "Dealer bust. Player bust!";
     }
+    if (totalDealerHandValue < 21 && totalPlayerHandValue < 21) {
+      if (totalPlayerHandValue == totalDealerHandValue) {
+        myOutputValue = `Its a tie <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+        console.log(
+          "its a tie, this is player total value and dealer total value",
+          totalPlayerHandValue,
+          totalDealerHandValue,
+          getCardsOutput()
+        );
+      }
+      if (totalPlayerHandValue > totalDealerHandValue) {
+        myOutputValue = `"Player wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
 
-    return myOutputValue;
+        console.log(
+          "Player wins! This is player total value and dealer total value",
+          totalPlayerHandValue,
+          totalDealerHandValue,
+          getCardsOutput()
+        );
+      }
+      if (totalDealerHandValue > totalPlayerHandValue) {
+        myOutputValue = `"Dealer wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+      }
+    }
   }
+  return myOutputValue;
 };
 
 //===Helper Function 1 - Make a Card Deck
