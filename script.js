@@ -18,9 +18,10 @@
 
 //assign var to different game mode
 var gameMode_gameStart = "game start";
-var gameMode_cardsDrawn = "Cards drawn";
+// var gameMode_cardsDrawn = "Cards drawn";
 var gameMode_compareResults = "compare cards";
 var gameMode_showResults = "show game results";
+var gameMode_hitOrStand = "Choose Hit or stand";
 var gameMode_reset = "reset";
 var currentGameMode = gameMode_gameStart; // initial game mode
 //Player and Computer's hand
@@ -35,8 +36,9 @@ var gameOver = false;
 // The maximum valid sum in Blackjack is 21.
 // name a constant integer value so that our logic is clear
 var TWENTY_ONE = 21;
-// Dealer always hits until she reaches a sum greater than 16.
-var dealerHitThreshold = 16;
+
+// The dealer has to hit if their hand is below 17.
+var dealerHitThreshold = 17;
 // If player has chosen to stand, then player can no longer hit until game is over
 var playerHasChosenToStand = false;
 
@@ -66,9 +68,9 @@ var calculateTotalPlayerHandValue = function (playerHand) {
   var index = 0;
   while (index < playerHand.length) {
     if (
-      playerHand[index].name == "jack" ||
-      playerHand[index].name == "queen" ||
-      playerHand[index].name == "king"
+      playerHand[index].name == "Jack" ||
+      playerHand[index].name == "Queen" ||
+      playerHand[index].name == "King"
     ) {
       totalPlayerHandValue = totalPlayerHandValue + 10;
     } else {
@@ -102,32 +104,20 @@ var calculateTotalDealerHandValue = function (dealerHand) {
 
 // @@@@----Main function ---------@@@@@//
 
-var main = function () {
+var main = function (input) {
   var myOutputValue = "";
   //When click submit at the start
-  if ((currentGameMode = gameMode_gameStart)) {
-    var deck = createNewDeck();
-    console.log("This is shuffledDeck", deck);
+  deck = createNewDeck();
+  console.log("This is shuffledDeck", deck);
+
+  if (currentGameMode == gameMode_gameStart) {
+    console.log("game mode 1", currentGameMode);
 
     //Player and computer pick 2 cards from shuffled deck
     playerHand.push(deck.pop());
     playerHand.push(deck.pop());
     dealerHand.push(deck.pop());
     dealerHand.push(deck.pop());
-
-    // console.log("This is player hand", playerHand);
-    // console.log("This is computer hand", dealerHand);
-
-    //Switch game mode
-    currentGameMode = gameMode_cardsDrawn;
-    myOutputValue =
-      "Both player and dealer has drawn 2 cards, please press submit to continue";
-  }
-
-  //When submit clicked for second time after cards drawnn.
-
-  if (currentGameMode == gameMode_cardsDrawn) {
-    console.log("game mode 1", currentGameMode);
 
     //The cards are analyzed for Blackjack
     // Winner will be annouced and game ends here if anyone has Blackjack
@@ -140,70 +130,83 @@ var main = function () {
 
     //Scenario 1: When both blackjack - Tie
     if (playerHasBlackJack == true && dealerHasBlackJack == true) {
-      return (myOutputValue = "Its a tie. Both Blackjack!");
+      return (myOutputValue =
+        "Its a tie. Both Blackjack! Please refresh to play again!");
     }
     //Scenario 2: When player blackjack - Playwer wins
     if (playerHasBlackJack == true && dealerHasBlackJack == false) {
       return (myOutputValue =
-        "Player has Blackjack and wins. Please refresh to play again.!");
+        "Player has Blackjack and wins. Please refresh to play again!");
     }
     //Scenario 3: When dealer blackjack - Dealer Wins
     if (playerHasBlackJack == false && dealerHasBlackJack == true) {
       return (myOutputValue =
-        "Dealer has Blackjack and wins. Please refresh to play again.!");
+        "Dealer has Blackjack and wins. Please refresh to play again!");
     } else {
       //no blackjack, games continue
       var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
       var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
 
-      if (totalPlayerHandValue == totalDealerHandValue) {
-        myOutputValue = `Its a tie <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
-        console.log(
-          "its a tie, this is player total value and dealer total value",
-          totalPlayerHandValue,
-          totalDealerHandValue,
-          getCardsOutput()
-        );
-      }
-      if (totalPlayerHandValue > totalDealerHandValue) {
-        myOutputValue = `"Player wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
-
-        console.log(
-          "Player wins! This is player total value and dealer total value",
-          totalPlayerHandValue,
-          totalDealerHandValue,
-          getCardsOutput()
-        );
-      }
-      if (totalDealerHandValue > totalPlayerHandValue) {
-        myOutputValue = `"Dealer wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
-        //  ${totalPlayerHandValue}, ${totalDealerHandValue}`;
-        console.log(
-          "Dealer wins! This is player total value and dealer total value",
-          totalPlayerHandValue,
-          totalDealerHandValue,
-          getCardsOutput()
-        );
-      }
+      console.log("game mode 2", currentGameMode);
+      var playerHandDisplayed = convertPlayerHandToString(playerHand);
+      console.log("This is playerhand", playerHand);
+      console.log("This is dealerhand", dealerHand[1]);
+      //Switch game mode to display player's cards and to choose hit or stand
+      currentGameMode = gameMode_hitOrStand;
+      myOutputValue = `Player, this is your hand${playerHandDisplayed}. This is one of Dealer's ${dealerHand[1].rank} of ${dealerHand[1].suit} card <br> Please enter "hit" or "stand", then press Submit`;
+      return myOutputValue;
     }
-    //Change gamemode to show results
-    currentGameMode = gameMode_showResults;
+
+    // The player decides whether to hit or stand, using the submit button to submit their choice.
+  } else if (currentGameMode == gameMode_hitOrStand) {
+    console.log("game mode 2", currentGameMode);
+    // validation
+    if (input !== "hit" && input !== "stand") {
+      return 'Please input either "hit" or "stand" as possible moves';
+    }
+    // player hit or stand -------------------------------------------------
+    if (input == "hit") {
+      playerHand.push(deck.pop());
+      var playerHandDisplayed = convertPlayerHandToString(playerHand);
+      console.log("This is player hand after hit", playerHand);
+      myOutputValue = `Player, this is your hand ${playerHandDisplayed}`;
+    }
+    // computer hit or stand -------------------------------------------------
+    if (totalDealerHandValue < dealerHitThreshold) {
+      // dealer draw a card
+      dealerHand.push(deck.pop());
+    }
+    // compare and decide winner -------------------------------------------------
+
+    var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
+    var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
+
+    if (totalPlayerHandValue == totalDealerHandValue) {
+      myOutputValue = `Its a tie <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+      console.log(
+        "its a tie, this is player total value and dealer total value",
+        totalPlayerHandValue,
+        totalDealerHandValue,
+        getCardsOutput()
+      );
+    }
+    if (totalPlayerHandValue > totalDealerHandValue) {
+      myOutputValue = `"Player wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+
+      console.log(
+        "Player wins! This is player total value and dealer total value",
+        totalPlayerHandValue,
+        totalDealerHandValue,
+        getCardsOutput()
+      );
+    }
+    if (totalDealerHandValue > totalPlayerHandValue) {
+      myOutputValue = `"Dealer wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+    }
+
     return myOutputValue;
   }
 };
-
-//Scenario 4a: Same value - Tie
-//Scenario 4b: Player value > dealer value - player wins
-//Scenario 4c: Dealer value > player value - dealer wins
-
-//change game mode
-//output message
-
-// var playerCard = deck.pop().name + " of " + deck.pop().suit;
-// console.log("This is the last card:", deck.pop());
-// var myOutputValue = `This is your card: ${playerCard}`;
-// console.log("Selected card", playerCard);
-// return myOutputValue;
 
 //===Helper Function 1 - Make a Card Deck
 //make 52 cards
@@ -308,8 +311,11 @@ var convertPlayerHandToString = function (playerhand) {
   var cards = " ";
 
   while (index < playerhand.length) {
-    var cards =
-      cards + "," + playerhand[index].name + " of " + playerhand[index].suit;
+    if (index == 0) {
+      cards += playerhand[index].name + " of " + playerhand[index].suit;
+    } else {
+      cards += ", " + playerhand[index].name + " of " + playerhand[index].suit;
+    }
     console.log("This is playerHand", playerHand[index]);
     index = index + 1;
   }
@@ -318,11 +324,15 @@ var convertPlayerHandToString = function (playerhand) {
 
 var convertDealerHandToString = function (dealerHand) {
   var index = 0;
-  var cards = " ";
+  var cards = "";
 
   while (index < dealerHand.length) {
-    var cards =
-      cards + "," + dealerHand[index].name + " of " + dealerHand[index].suit;
+    if (index == 0) {
+      cards = dealerHand[index].name + " of " + dealerHand[index].suit;
+    } else {
+      cards =
+        cards + "," + dealerHand[index].name + " of " + dealerHand[index].suit;
+    }
     index = index + 1;
   }
   return cards;
@@ -336,3 +346,16 @@ var getCardsOutput = function () {
       dealerHand
     )} with sum ${calculateTotalDealerHandValue(dealerHand)}.`;
 };
+
+//Scenario 4a: Same value - Tie
+//Scenario 4b: Player value > dealer value - player wins
+//Scenario 4c: Dealer value > player value - dealer wins
+
+//change game mode
+//output message
+
+// var playerCard = deck.pop().name + " of " + deck.pop().suit;
+// console.log("This is the last card:", deck.pop());
+// var myOutputValue = `This is your card: ${playerCard}`;
+// console.log("Selected card", playerCard);
+// return myOutputValue;
