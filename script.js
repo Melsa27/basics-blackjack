@@ -20,6 +20,7 @@
 var gameMode_gameStart = "game start";
 var gameMode_cardsDrawn = "Cards drawn";
 var gameMode_compareResults = "compare cards";
+var gameMode_showResults = "show game results";
 var gameMode_reset = "reset";
 var currentGameMode = gameMode_gameStart; // initial game mode
 //Player and Computer's hand
@@ -28,6 +29,16 @@ var dealerHand = [];
 //Var to deck created and shuffled
 var deck;
 var shuffledDeck;
+// Keep track of when the game ends to prevent further moves
+var gameOver = false;
+
+// The maximum valid sum in Blackjack is 21.
+// name a constant integer value so that our logic is clear
+var TWENTY_ONE = 21;
+// Dealer always hits until she reaches a sum greater than 16.
+var dealerHitThreshold = 16;
+// If player has chosen to stand, then player can no longer hit until game is over
+var playerHasChosenToStand = false;
 
 // -----Game Functions --------//
 //1 ----function to check for blackJack---//
@@ -75,9 +86,9 @@ var calculateTotalDealerHandValue = function (dealerHand) {
   var index = 0;
   while (index < dealerHand.length) {
     if (
-      dealerHand[index].name == "jack" ||
-      dealerHand[index].name == "queen" ||
-      dealerHand[index].name == "king"
+      dealerHand[index].name == "Jack" ||
+      dealerHand[index].name == "Queen" ||
+      dealerHand[index].name == "King"
     ) {
       totalDealerHandValue = totalDealerHandValue + 10;
     } else {
@@ -116,65 +127,67 @@ var main = function () {
   //When submit clicked for second time after cards drawnn.
 
   if (currentGameMode == gameMode_cardsDrawn) {
-    //Check for blackjack
-    // playerHand = [
-    //   { name: "queen", suit: "clubs", rank: 12 },
-    //   { name: "ace", suit: "diamonds", rank: 1 },
-    // ];
-    // dealerHand = [
-    //   { name: "ace", suit: "clubs", rank: 1 },
-    //   { name: 10, suit: "spades", rank: 10 },
-    // ];
     console.log("game mode 1", currentGameMode);
+
+    //The cards are analyzed for Blackjack
+    // Winner will be annouced and game ends here if anyone has Blackjack
 
     var playerHasBlackJack = checkForBlackJack(playerHand);
     var dealerHasBlackJack = checkForBlackJack(dealerHand);
+
     console.log("Does player have blackjack?", playerHasBlackJack);
     console.log("Does dealer has blackjack?", dealerHasBlackJack);
+
     //Scenario 1: When both blackjack - Tie
-    if (playerHasBlackJack == true || dealerHasBlackJack == true) {
-      myOutputValue = "Its a tie. Both Blackjack!";
+    if (playerHasBlackJack == true && dealerHasBlackJack == true) {
+      return (myOutputValue = "Its a tie. Both Blackjack!");
     }
     //Scenario 2: When player blackjack - Playwer wins
     if (playerHasBlackJack == true && dealerHasBlackJack == false) {
-      myOutputValue = "Player wins. BlackJack!";
+      return (myOutputValue =
+        "Player has Blackjack and wins. Please refresh to play again.!");
     }
     //Scenario 3: When dealer blackjack - Dealer Wins
     if (playerHasBlackJack == false && dealerHasBlackJack == true) {
-      myOutputValue = "Dealer wins. BlackJack!";
+      return (myOutputValue =
+        "Dealer has Blackjack and wins. Please refresh to play again.!");
     } else {
       //no blackjack, games continue
       var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
       var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
 
       if (totalPlayerHandValue == totalDealerHandValue) {
-        myOutputValue = `"Its a tie this is player total value and dealer total value",
-          ${totalPlayerHandValue}, ${totalDealerHandValue}`;
+        myOutputValue = `Its a tie <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
         console.log(
           "its a tie, this is player total value and dealer total value",
           totalPlayerHandValue,
-          totalDealerHandValue
+          totalDealerHandValue,
+          getCardsOutput()
         );
       }
       if (totalPlayerHandValue > totalDealerHandValue) {
-        myOutputValue = `"Player wins! This is player total value and dealer total value",
-       ${totalPlayerHandValue}, ${totalDealerHandValue}`;
+        myOutputValue = `"Player wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+
         console.log(
           "Player wins! This is player total value and dealer total value",
           totalPlayerHandValue,
-          totalDealerHandValue
+          totalDealerHandValue,
+          getCardsOutput()
         );
       }
       if (totalDealerHandValue > totalPlayerHandValue) {
-        myOutputValue = `"Dealer wins!" This is player total value and dealer total value",
-   ${totalPlayerHandValue}, ${totalDealerHandValue}`;
+        myOutputValue = `"Dealer wins!" <br> ${getCardsOutput()}<br> Please press refresh to start again!`;
+        //  ${totalPlayerHandValue}, ${totalDealerHandValue}`;
         console.log(
           "Dealer wins! This is player total value and dealer total value",
           totalPlayerHandValue,
-          totalDealerHandValue
+          totalDealerHandValue,
+          getCardsOutput()
         );
       }
     }
+    //Change gamemode to show results
+    currentGameMode = gameMode_showResults;
     return myOutputValue;
   }
 };
@@ -192,7 +205,7 @@ var main = function () {
 // console.log("Selected card", playerCard);
 // return myOutputValue;
 
-//===Helper Function 1 (Make Card Deck)
+//===Helper Function 1 - Make a Card Deck
 //make 52 cards
 //rank 1-13
 //1-4 suits hearts, diamonds, clubs, spades
@@ -201,7 +214,7 @@ function makeDeck() {
   // Initialise an empty deck array
   var cardDeck = [];
   // Initialise an array of the 4 suits in our deck. We will loop over this array.
-  var suits = ["hearts", "diamonds", "clubs", "spades"];
+  var suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
 
   // Loop over the suits array
   var suitIndex = 0;
@@ -221,13 +234,13 @@ function makeDeck() {
 
       //These are special cases where card name is not from 2 to 10. If rank is 1 (ace), 11 (jack), 12 (Queen), or 13(King), set cardName to the ace or face card's name
       if (cardName == 1) {
-        cardName = "ace";
+        cardName = "Ace";
       } else if (cardName == 11) {
-        cardName = "jack";
+        cardName = "Jack";
       } else if (cardName == 12) {
-        cardName = "queen";
+        cardName = "Queen";
       } else if (cardName == 13) {
-        cardName = "king";
+        cardName = "King";
       }
 
       // // Create a new card with the current name, suit, and rank
@@ -281,9 +294,45 @@ var shuffleCards = function (cardDeck) {
   return cardDeck;
 };
 
-//===Helper function 3 - creates and shuffles
+//===Helper function 3 - creates a deck and shuffles
 var createNewDeck = function () {
   var newDeck = makeDeck();
   var shuffledDeck = shuffleCards(newDeck);
   return shuffledDeck;
+};
+
+//====Helper function 4 -- Convert object to string
+// Convert hand to a string where objects within the array are stringified
+var convertPlayerHandToString = function (playerhand) {
+  var index = 0;
+  var cards = " ";
+
+  while (index < playerhand.length) {
+    var cards =
+      cards + "," + playerhand[index].name + " of " + playerhand[index].suit;
+    console.log("This is playerHand", playerHand[index]);
+    index = index + 1;
+  }
+  return cards;
+};
+
+var convertDealerHandToString = function (dealerHand) {
+  var index = 0;
+  var cards = " ";
+
+  while (index < dealerHand.length) {
+    var cards =
+      cards + "," + dealerHand[index].name + " of " + dealerHand[index].suit;
+    index = index + 1;
+  }
+  return cards;
+};
+
+var getCardsOutput = function () {
+  return `Player has: ${convertPlayerHandToString(
+    playerHand
+  )} with sum ${calculateTotalPlayerHandValue(playerHand)}. <br>
+    Computer has: ${convertDealerHandToString(
+      dealerHand
+    )} with sum ${calculateTotalDealerHandValue(dealerHand)}.`;
 };
