@@ -10,13 +10,14 @@
 // ---------------
 
 //assign var to different game mode
+var gameMode_Name = "Get name";
 var gameMode_gameStart = "game start";
 // var gameMode_cardsDrawn = "Cards drawn";
 var gameMode_compareResults = "compare cards";
 var gameMode_showResults = "show game results";
 var gameMode_hitOrStand = "Choose Hit or stand";
 var gameMode_reset = "reset";
-var currentGameMode = gameMode_gameStart; // initial game mode
+var currentGameMode = gameMode_Name; // initial game mode
 //Player and Computer's hand
 var playerHand = [];
 var dealerHand = [];
@@ -29,6 +30,12 @@ var gameOver = false;
 var dealerHitThreshold = 17;
 //Hit 21 to win
 var toWinGame = 21;
+//Username
+var userName = "";
+//Count score
+var winCount = 0;
+var totalPlay = 0;
+var pointsToStart = 100;
 
 // -----Game Functions --------//
 //1 ----function to check for blackJack---//
@@ -123,156 +130,178 @@ var calculateTotalDealerHandValue = function (dealerHand) {
 
 var main = function (input) {
   var myOutputValue = "";
-  //When click submit at the start
-  deck = createNewDeck();
-  console.log("This is shuffledDeck", deck);
-
-  if (currentGameMode == gameMode_gameStart) {
-    console.log("game mode 1", currentGameMode);
-
-    //Player and computer pick 2 cards from shuffled deck
-    playerHand.push(deck.pop());
-    playerHand.push(deck.pop());
-    dealerHand.push(deck.pop());
-    dealerHand.push(deck.pop());
-
-    console.log("This is dealerHand at start", dealerHand);
-
-    //The cards are analyzed for Blackjack
-    // Winner will be annouced and game ends here if anyone has Blackjack
-
-    var playerHasBlackJack = checkForBlackJack(playerHand);
-    var dealerHasBlackJack = checkForBlackJack(dealerHand);
-
-    // var playerHasBlackJack = true;
-    // var dealerHasBlackJack = true;
-
-    console.log("Does player have blackjack?", playerHasBlackJack);
-    console.log("Does dealer has blackjack?", dealerHasBlackJack);
-
-    //Scenario 1: When both blackjack - Tie
-    if (playerHasBlackJack == true && dealerHasBlackJack == true) {
-      var myImage =
-        '<img src="https://c.tenor.com/FEQRi1Y4PZgAAAAd/swing-grey-cat.gif"/>';
-
-      return (myOutputValue = `WHAT!? Its a tie! <b>Both Blackjack!!!</b> <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br>Please <b>refresh page</b> to play again!`);
+  if (pointsToStart > 0) {
+    if (currentGameMode == gameMode_Name) {
+      //set the name
+      console.log("This is current game mode before name", currentGameMode);
+      userName = "Player " + input;
+      //now that we have the name, switch the mode
+      currentGameMode = gameMode_gameStart;
+      var myImage = '<img src="https://c.tenor.com/sW_xgchdo6kAAAAj/nya.gif"/>';
+      return (myOutputValue = `Hello ${userName}! Click <b>submit</b> to start the game! <br><br><b><u><center>Rules</u></b><br>You start with ${pointsToStart} points. <br>Winning will add 10 points and losing will deduct 10 points.<br> If anyone gets 21, its sudden death, person with 21 wins all. Game over! <br><br> ${myImage}</center>`);
     }
 
-    //Scenario 2: When player blackjack - Playwer wins
-    if (playerHasBlackJack == true && dealerHasBlackJack == false) {
-      var myImage =
-        '<img src="https://c.tenor.com/2P40C7wvid4AAAAd/cat-mochi-mochi-peach-cat.gif"/>';
-      return (myOutputValue = `<b>Player</b> has <b>Blackjack</b> and wins! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br> Please <b>refresh page</b> to play again!`);
-    }
-    //Scenario 3: When dealer blackjack - Dealer Wins
-    if (playerHasBlackJack == false && dealerHasBlackJack == true) {
-      var myImage =
-        '<img src="https://c.tenor.com/sjnrOgJ_uagAAAAd/cute-cat-crying.gif"/>';
-      return (myOutputValue = `<b>Dealer</b> has <b>Blackjack</b> and wins! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br> Please <b>refresh page</b> to play again!`);
-    } else {
-      //no blackjack, games continue
+    //When click submit at the start
+    deck = createNewDeck();
+    console.log("This is shuffledDeck", deck);
+
+    if (currentGameMode == gameMode_gameStart) {
+      console.log("game mode 1", currentGameMode);
+
+      //Player and computer pick 2 cards from shuffled deck
+      playerHand.push(deck.pop());
+      playerHand.push(deck.pop());
+      dealerHand.push(deck.pop());
+      dealerHand.push(deck.pop());
+
+      console.log("This is dealerHand at start", dealerHand);
+
+      //The cards are analyzed for Blackjack
+      // Winner will be annouced and game ends here if anyone has Blackjack
+
+      var playerHasBlackJack = checkForBlackJack(playerHand);
+      var dealerHasBlackJack = checkForBlackJack(dealerHand);
+
+      console.log("Does player have blackjack?", playerHasBlackJack);
+      console.log("Does dealer has blackjack?", dealerHasBlackJack);
+
+      //Scenario 1: When both blackjack - Tie
+      if (playerHasBlackJack == true && dealerHasBlackJack == true) {
+        var myImage =
+          '<img src="https://c.tenor.com/FEQRi1Y4PZgAAAAd/swing-grey-cat.gif"/>';
+
+        return (myOutputValue = `WHAT!? Its a tie! <b>Both Blackjack!!! Game over!</b> <br> ${getCardsOutput()} <br> <br><br> <center> ${myImage} <br>GAME OVER! Please <b>refresh page</b> to play again!`);
+      }
+
+      //Scenario 2: When player blackjack - Playwer wins
+      if (playerHasBlackJack == true && dealerHasBlackJack == false) {
+        var myImage =
+          '<img src="https://c.tenor.com/2P40C7wvid4AAAAd/cat-mochi-mochi-peach-cat.gif"/>';
+        return (myOutputValue = `<b>${userName}</b> has <b>Blackjack</b> and wins! GAME OVER! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br> GAME OVER! Please <b>refresh page</b> to play again!`);
+      }
+      //Scenario 3: When dealer blackjack - Dealer Wins
+      if (playerHasBlackJack == false && dealerHasBlackJack == true) {
+        var myImage =
+          '<img src="https://c.tenor.com/sjnrOgJ_uagAAAAd/cute-cat-crying.gif"/>';
+        return (myOutputValue = `<b>Dealer</b> has <b>Blackjack</b> and wins! GAME OVER! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br> GAME OVER! Please <b>refresh page</b> to play again!`);
+      } else {
+        //no blackjack, games continue
+        var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
+        var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
+
+        console.log("game mode 2", currentGameMode);
+        var playerHandDisplayed = convertPlayerHandToString(playerHand);
+        console.log("This is playerhand", playerHand);
+        console.log("This is dealerhand", dealerHand[1]);
+        //Switch game mode to display player's cards and to choose hit or stand
+        currentGameMode = gameMode_hitOrStand;
+        var myImage =
+          '<img src = "https://c.tenor.com/BB3sZELhyQgAAAAj/ermm-hmmm.gif"/>';
+
+        myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
+        // return myOutputValue;
+      }
+      return myOutputValue;
+      // The player decides whether to hit or stand, using the submit button to submit their choice.
+    } else if (currentGameMode == gameMode_hitOrStand) {
+      console.log("game mode 2", currentGameMode);
+      // validation
+      if (input !== "h" && input !== "H" && input !== "s" && input !== "S") {
+        return 'Please input either "h" for hit or "s" for stand as possible moves';
+      }
+      // player hit or stand -------------------------------------------------
+      if (input == "h" || input == "H") {
+        playerHand.push(deck.pop());
+        var playerHandDisplayed = convertPlayerHandToString(playerHand);
+
+        //--------if under 21 after throwing another card - return if they want to hit or stand again
+        var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
+        if (totalPlayerHandValue <= toWinGame) {
+          var myImage =
+            '<img src="https://c.tenor.com/KayBlLo95RoAAAAd/peach-cat.gif"/>';
+
+          myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
+          return myOutputValue;
+        }
+
+        var playerHandDisplayed = convertPlayerHandToString(playerHand);
+        console.log("This is player hand after 1 hit", playerHand);
+        // myOutputValue = `Player, this is your hand ${playerHandDisplayed} `;
+      }
+      if (input == "s" || input == "S") {
+        var playerHandDisplayed = convertPlayerHandToString(playerHand);
+        console.log("This is player hand after 1 hit", playerHand);
+        // myOutputValue = `Player, this is your hand ${playerHandDisplayed} `;
+      }
+      //Calculate current total ---------------------------------------------
       var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
       var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
 
-      console.log("game mode 2", currentGameMode);
-      var playerHandDisplayed = convertPlayerHandToString(playerHand);
-      console.log("This is playerhand", playerHand);
-      console.log("This is dealerhand", dealerHand[1]);
-      //Switch game mode to display player's cards and to choose hit or stand
-      currentGameMode = gameMode_hitOrStand;
-      var myImage =
-        '<img src = "https://c.tenor.com/BB3sZELhyQgAAAAj/ermm-hmmm.gif"/>';
+      // Player hit or stand again if value is less than 17 -----------------
 
-      myOutputValue = `Player, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
-      // return myOutputValue;
+      // computer hit or stand -------------------------------------------------
+      while (totalDealerHandValue < dealerHitThreshold) {
+        // dealer draw a card
+        dealerHand.push(deck.pop());
+        console.log("This is dealerHand after drawing third card", dealerHand);
+        totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
+      }
+      // compare and decide winner ------------------------------------------------
+
+      if (totalPlayerHandValue > 21 && totalDealerHandValue <= 21) {
+        pointsToStart = pointsToStart - 10;
+        var myImage =
+          '<img src="https://c.tenor.com/M_5Qg9ok3HQAAAAd/cat-pout.gif"/>';
+        myOutputValue = `<b>Dealer wins</b> with ${totalDealerHandValue}! ${userName} bust with ${totalPlayerHandValue}.<br> ${getCardsOutput()}<br><br>Total Points:${pointsToStart} <br> <center> ${myImage}   <br><br> Press "submit" to have another go!`;
+      }
+      if (totalPlayerHandValue <= 21 && totalDealerHandValue > 21) {
+        pointsToStart = pointsToStart + 10;
+        var myImage =
+          '<img src="https://c.tenor.com/906nGAL7Xw0AAAAi/mochi-peachcat-cute-cat.gif"/>';
+
+        myOutputValue = `<b>${userName} wins</b> with ${totalPlayerHandValue}! Dealer bust with ${totalDealerHandValue}. <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage}     <br><br> Press "submit" to have another go!`;
+      }
+      if (totalPlayerHandValue > 21 && totalDealerHandValue > 21) {
+        var myImage =
+          '<img src="https://c.tenor.com/akjDxmuk7o4AAAAd/cute-cat.gif"/>';
+        myOutputValue = `BOOOOOM! No one wins! Dealer bust with ${totalDealerHandValue}. ${userName} bust with ${totalPlayerHandValue}! <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!`;
+      }
+      if (totalDealerHandValue == 21 && totalPlayerHandValue < 21) {
+        pointsToStart = pointsToStart - 10;
+        var myImage =
+          '<img src="https://c.tenor.com/pJNWy-sz-fEAAAAj/peach-cat-crying.gif"/>';
+
+        myOutputValue = `<b>Dealer wins!</b> <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
+      }
+      if (totalDealerHandValue < 21 && totalPlayerHandValue < 21) {
+        if (totalPlayerHandValue == totalDealerHandValue) {
+          var myImage =
+            '<img src="https://c.tenor.com/WiQQRwR2QFAAAAAj/cute-panda.gif"/>';
+          myOutputValue = `<b>Its a tie!!</B> <br> ${getCardsOutput()} <br><br> Total Points:${pointsToStart} <br> <center> ${myImage} Press "submit" to have another go!</center>  `;
+        }
+        if (totalPlayerHandValue > totalDealerHandValue) {
+          pointsToStart = pointsToStart + 10;
+          var myImage =
+            '<img src="https://c.tenor.com/0_6RNy6eYZcAAAAd/yay-mochi.gif"/>';
+          myOutputValue = `<b>${userName} wins!</b> <br> ${getCardsOutput()}<br><br> Total Points:${pointsToStart} <br> <center> ${myImage}   Press "submit" to have another go!</center>`;
+        }
+        if (totalDealerHandValue > totalPlayerHandValue) {
+          pointsToStart = pointsToStart - 10;
+          var myImage =
+            '<img src="https://c.tenor.com/yhMZIW9G7BkAAAAj/peachcat-cat.gif"/>';
+
+          myOutputValue = `<b>Dealer wins!</b> <br> ${getCardsOutput()} <br><br> Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
+        }
+      }
     }
+    resetGame();
     return myOutputValue;
-    // The player decides whether to hit or stand, using the submit button to submit their choice.
-  } else if (currentGameMode == gameMode_hitOrStand) {
-    console.log("game mode 2", currentGameMode);
-    // validation
-    if (input !== "h" && input !== "H" && input !== "s" && input !== "S") {
-      return 'Please input either "h" for hit or "s" for stand as possible moves';
-    }
-    // player hit or stand -------------------------------------------------
-    if (input == "h" || input == "H") {
-      playerHand.push(deck.pop());
-      var playerHandDisplayed = convertPlayerHandToString(playerHand);
-
-      //--------if under 21 after throwing another card - return if they want to hit or stand again
-      var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
-      if (totalPlayerHandValue < toWinGame) {
-        myOutputValue = `Player, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
-        return myOutputValue;
-      }
-
-      var playerHandDisplayed = convertPlayerHandToString(playerHand);
-      console.log("This is player hand after 1 hit", playerHand);
-      // myOutputValue = `Player, this is your hand ${playerHandDisplayed} `;
-    }
-    if (input == "s" || input == "S") {
-      var playerHandDisplayed = convertPlayerHandToString(playerHand);
-      console.log("This is player hand after 1 hit", playerHand);
-      // myOutputValue = `Player, this is your hand ${playerHandDisplayed} `;
-    }
-    //Calculate current total ---------------------------------------------
-    var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
-    var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
-
-    // Player hit or stand again if value is less than 17 -----------------
-
-    // computer hit or stand -------------------------------------------------
-    while (totalDealerHandValue < dealerHitThreshold) {
-      // dealer draw a card
-      dealerHand.push(deck.pop());
-      console.log("This is dealerHand after drawing third card", dealerHand);
-      totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
-    }
-    // compare and decide winner ------------------------------------------------
-
-    if (totalPlayerHandValue > 21 && totalDealerHandValue <= 21) {
-      var myImage =
-        '<img src="https://c.tenor.com/M_5Qg9ok3HQAAAAd/cat-pout.gif"/>';
-      myOutputValue = `<b>Dealer wins</b> with ${totalDealerHandValue}! Player bust with ${totalPlayerHandValue}.<br> ${getCardsOutput()}<br><br> <center> ${myImage}   <br><br> Press "submit" to have another go!`;
-    }
-    if (totalPlayerHandValue <= 21 && totalDealerHandValue > 21) {
-      var myImage =
-        '<img src="https://c.tenor.com/906nGAL7Xw0AAAAi/mochi-peachcat-cute-cat.gif"/>';
-
-      myOutputValue = `<b>Player wins</b> with ${totalPlayerHandValue}! Dealer bust with ${totalDealerHandValue}. <br> ${getCardsOutput()} <br><br> <center> ${myImage}     <br><br> Press "submit" to have another go!`;
-    }
-    if (totalPlayerHandValue > 21 && totalDealerHandValue > 21) {
-      var myImage =
-        '<img src="https://c.tenor.com/akjDxmuk7o4AAAAd/cute-cat.gif"/>';
-      myOutputValue = `BOOOOOM! No one wins! Dealer bust with ${totalDealerHandValue}. Player bust with ${totalPlayerHandValue}! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br><br> Press "submit" to have another go!`;
-    }
-    if (totalDealerHandValue == 21 && totalPlayerHandValue < 21) {
-      var myImage =
-        '<img src="https://c.tenor.com/pJNWy-sz-fEAAAAj/peach-cat-crying.gif"/>';
-
-      myOutputValue = `<b>Dealer wins!</b> <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
-    }
-    if (totalDealerHandValue < 21 && totalPlayerHandValue < 21) {
-      if (totalPlayerHandValue == totalDealerHandValue) {
-        var myImage =
-          '<img src="https://c.tenor.com/WiQQRwR2QFAAAAAj/cute-panda.gif"/>';
-        myOutputValue = `<b>Its a tie!!</B> <br> ${getCardsOutput()} <br><br> <center> ${myImage} Press "submit" to have another go!</center>  `;
-      }
-      if (totalPlayerHandValue > totalDealerHandValue) {
-        var myImage =
-          '<img src="https://c.tenor.com/0_6RNy6eYZcAAAAd/yay-mochi.gif"/>';
-        myOutputValue = `<b>Player wins!</b> <br> ${getCardsOutput()}<br><br> <center> ${myImage}   Press "submit" to have another go!</center>`;
-      }
-      if (totalDealerHandValue > totalPlayerHandValue) {
-        var myImage =
-          '<img src="https://c.tenor.com/yhMZIW9G7BkAAAAj/peachcat-cat.gif"/>';
-
-        myOutputValue = `<b>Dealer wins!</b> <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
-      }
-    }
+  } else {
+    resetGame();
+    var myImage =
+      '<img src="https://c.tenor.com/1mTPXADa0yMAAAAi/cry-miss.gif"/>';
+    return `YOU HAVE NO POINTS LEFT! HOW IS THAT POSSIBLE!? <br>Fun Fact: The odds of this happening are 1 in 510! <br>Better luck next time ... and I will stay away from any form of gambling if I am you. #JustSaying <br><br><center>${myImage} <I>Please refresh page to start new game`;
   }
-  resetGame();
-  return myOutputValue;
 };
 
 //===Helper Function 1 - Make a Card Deck
@@ -406,7 +435,7 @@ var convertDealerHandToString = function (dealerHand) {
 };
 
 var getCardsOutput = function () {
-  return `Player has: ${convertPlayerHandToString(
+  return `${userName} has: ${convertPlayerHandToString(
     playerHand
   )} . Total: ${calculateTotalPlayerHandValue(playerHand)}. <br>
     Dealer has: ${convertDealerHandToString(
