@@ -411,9 +411,9 @@ var convertPlayerHandToString = function (playerhand) {
 
   while (index < playerhand.length) {
     if (index == 0) {
-      cards += playerhand[index].name + " of " + playerhand[index].suit;
+      cards += playerhand[index].name + playerhand[index].suit;
     } else {
-      cards += ", " + playerhand[index].name + " of " + playerhand[index].suit;
+      cards += ", " + playerhand[index].name + playerhand[index].suit;
     }
     console.log("This is playerHand", playerHand[index]);
     index = index + 1;
@@ -427,10 +427,9 @@ var convertDealerHandToString = function (dealerHand) {
 
   while (index < dealerHand.length) {
     if (index == 0) {
-      cards = dealerHand[index].name + " of " + dealerHand[index].suit;
+      cards = dealerHand[index].name + dealerHand[index].suit;
     } else {
-      cards =
-        cards + "," + dealerHand[index].name + " of " + dealerHand[index].suit;
+      cards = cards + "," + dealerHand[index].name + dealerHand[index].suit;
     }
     index = index + 1;
   }
