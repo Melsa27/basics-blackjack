@@ -163,6 +163,9 @@ var main = function (input) {
       var playerHasBlackJack = checkForBlackJack(playerHand);
       var dealerHasBlackJack = checkForBlackJack(dealerHand);
 
+      // var playerHasBlackJack = true;
+      // var dealerHasBlackJack = true;
+
       console.log("Does player have blackjack?", playerHasBlackJack);
       console.log("Does dealer has blackjack?", dealerHasBlackJack);
 
@@ -175,19 +178,21 @@ var main = function (input) {
       }
 
       //Scenario 2: When player blackjack - Playwer wins
-      if (playerHasBlackJack == true && dealerHasBlackJack == false) {
+      else if (playerHasBlackJack == true && dealerHasBlackJack == false) {
         var myImage =
           '<img src="https://c.tenor.com/2P40C7wvid4AAAAd/cat-mochi-mochi-peach-cat.gif"/>';
         return (myOutputValue = `<b>${userName}</b> has <b>Blackjack</b> and wins! GAME OVER! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br> GAME OVER! Please <b>refresh page</b> to play again!`);
       }
       //Scenario 3: When dealer blackjack - Dealer Wins
-      if (playerHasBlackJack == false && dealerHasBlackJack == true) {
+      else if (playerHasBlackJack == false && dealerHasBlackJack == true) {
         var myImage =
           '<img src="https://c.tenor.com/sjnrOgJ_uagAAAAd/cute-cat-crying.gif"/>';
         return (myOutputValue = `<b>Dealer</b> has <b>Blackjack</b> and wins! GAME OVER! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br> GAME OVER! Please <b>refresh page</b> to play again!`);
       }
 
-      if (playerHasBlackJack == false && dealerHasBlackJack == false) {
+      //Scenario 4:
+      // if (playerHasBlackJack == false && dealerHasBlackJack == false)
+      else {
         //no blackjack, games continue
         var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
         var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
@@ -201,7 +206,7 @@ var main = function (input) {
         var myImage =
           '<img src = "https://c.tenor.com/BB3sZELhyQgAAAAj/ermm-hmmm.gif"/>';
 
-        myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
+        myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
         // return myOutputValue;
       }
       return myOutputValue;
@@ -223,7 +228,7 @@ var main = function (input) {
           var myImage =
             '<img src="https://c.tenor.com/KayBlLo95RoAAAAd/peach-cat.gif"/>';
 
-          myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].name} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
+          myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].name} ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
           return myOutputValue;
         }
 
@@ -250,45 +255,69 @@ var main = function (input) {
         totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
       }
       // compare and decide winner ------------------------------------------------
-
+      console.log(
+        "This is playerHandvalue and dealer hand value",
+        totalPlayerHandValue,
+        totalDealerHandValue
+      );
+      //Scenario 1, player>21, dealer<21 or dealer = 21 -> Dealer wins
       if (totalPlayerHandValue > 21 && totalDealerHandValue <= 21) {
+        console.log("Run A");
         pointsToStart = pointsToStart - 10;
         var myImage =
           '<img src="https://c.tenor.com/M_5Qg9ok3HQAAAAd/cat-pout.gif"/>';
         myOutputValue = `<b>Dealer wins</b> with ${totalDealerHandValue}! ${userName} bust with ${totalPlayerHandValue}.<br> ${getCardsOutput()}<br><br>Total Points:${pointsToStart} <br> <center> ${myImage}   <br><br> Press "submit" to have another go!`;
       }
+      //Scenario 2, player<21 OR player = 21, dealer>21 bust -> Player wins
       if (totalPlayerHandValue <= 21 && totalDealerHandValue > 21) {
+        console.log("Run B");
         pointsToStart = pointsToStart + 10;
         var myImage =
           '<img src="https://c.tenor.com/906nGAL7Xw0AAAAi/mochi-peachcat-cute-cat.gif"/>';
-
         myOutputValue = `<b>${userName} wins</b> with ${totalPlayerHandValue}! Dealer bust with ${totalDealerHandValue}. <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage}     <br><br> Press "submit" to have another go!`;
       }
+      //Scenario 3, player & dealer bust -> No winner
       if (totalPlayerHandValue > 21 && totalDealerHandValue > 21) {
+        console.log("Run C");
         var myImage =
           '<img src="https://c.tenor.com/akjDxmuk7o4AAAAd/cute-cat.gif"/>';
         myOutputValue = `BOOOOOM! No one wins! Dealer bust with ${totalDealerHandValue}. ${userName} bust with ${totalPlayerHandValue}! <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!`;
       }
-      if (totalDealerHandValue == 21 && totalPlayerHandValue < 21) {
+      //Scenario 4, player =21, dealer < 21 -> player wins
+      if (totalPlayerHandValue == 21 && totalDealerHandValue < 21) {
+        console.log("Run D");
+        pointsToStart = pointsToStart + 10;
+        var myImage =
+          '<img src="https://c.tenor.com/B90M86eYw0cAAAAj/cute-mochi-mochi.gif"/>';
+        myOutputValue = `<b>Player wins with ${totalPlayerHandValue}!</b> <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
+      }
+      //Scemario 5, player <21, dealer = 21 -> dealer wins
+      if (totalPlayerHandValue < 21 && totalDealerHandValue == 21) {
+        console.log("Run E");
         pointsToStart = pointsToStart - 10;
         var myImage =
           '<img src="https://c.tenor.com/pJNWy-sz-fEAAAAj/peach-cat-crying.gif"/>';
-
         myOutputValue = `<b>Dealer wins with ${totalDealerHandValue}!</b> <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
       }
+
       if (totalDealerHandValue < 21 && totalPlayerHandValue < 21) {
+        console.log("Run F");
         if (totalPlayerHandValue == totalDealerHandValue) {
+          console.log("Run F1");
           var myImage =
             '<img src="https://c.tenor.com/WiQQRwR2QFAAAAAj/cute-panda.gif"/>';
           myOutputValue = `<b>Its a tie!!</B> <br> ${getCardsOutput()} <br><br> Total Points:${pointsToStart} <br> <center> ${myImage} Press "submit" to have another go!</center>  `;
         }
+
         if (totalPlayerHandValue > totalDealerHandValue) {
+          console.log("Run F2");
           pointsToStart = pointsToStart + 10;
           var myImage =
             '<img src="https://c.tenor.com/0_6RNy6eYZcAAAAd/yay-mochi.gif"/>';
           myOutputValue = `<b>${userName} wins!</b> <br> ${getCardsOutput()}<br><br> Total Points:${pointsToStart} <br> <center> ${myImage}   Press "submit" to have another go!</center>`;
         }
         if (totalDealerHandValue > totalPlayerHandValue) {
+          console.log("Run F3");
           pointsToStart = pointsToStart - 10;
           var myImage =
             '<img src="https://c.tenor.com/yhMZIW9G7BkAAAAj/peachcat-cat.gif"/>';
@@ -303,7 +332,7 @@ var main = function (input) {
     resetGame();
     var myImage =
       '<img src="https://c.tenor.com/1mTPXADa0yMAAAAi/cry-miss.gif"/>';
-    return `<b>YOU HAVE NO POINTS LEFT! HOW IS THAT POSSIBLE!?</b> <br>Fun Fact: The odds of this happening are 1 in 510! <br>Better luck next time ... and I will stay away from any form of gambling if I am you. #JustSaying <br><br><center>${myImage} <I>Please refresh page to start new game`;
+    return `<b>YOU HAVE NO POINTS LEFT! HOW IS THAT POSSIBLE !?!</b> <br>Fun Fact: The odds of this happening are 1 in 510! <br>Better luck next time ... though I will stay away from any form of gambling if I am you. #JustSaying <br><br><center>${myImage} <I>Please refresh page to start new game`;
   }
 };
 
