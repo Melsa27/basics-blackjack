@@ -27,6 +27,8 @@ var shuffledDeck;
 var gameOver = false;
 // The dealer has to hit if their hand is below 17.
 var dealerHitThreshold = 17;
+//Hit 21 to win
+// var toWinGame = 21;
 
 // -----Game Functions --------//
 //1 ----function to check for blackJack---//
@@ -44,6 +46,7 @@ var checkForBlackJack = function (handArray) {
   ) {
     isBlackJack = true;
   }
+
   return isBlackJack;
 };
 //----end of 1---//
@@ -181,9 +184,9 @@ var main = function (input) {
         '<img src = "https://c.tenor.com/BB3sZELhyQgAAAAj/ermm-hmmm.gif"/>';
 
       myOutputValue = `Player, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
-      return myOutputValue;
+      // return myOutputValue;
     }
-
+    return myOutputValue;
     // The player decides whether to hit or stand, using the submit button to submit their choice.
   } else if (currentGameMode == gameMode_hitOrStand) {
     console.log("game mode 2", currentGameMode);
@@ -193,8 +196,16 @@ var main = function (input) {
     }
     // player hit or stand -------------------------------------------------
     if (input == "h") {
-      //--------if under 21, then hit again - return if they want to hit or stand again
       playerHand.push(deck.pop());
+      var playerHandDisplayed = convertPlayerHandToString(playerHand);
+
+      //_____this part does not work______//
+      //--------if under 21, then hit again - return if they want to hit or stand again
+      // if (totalPlayerHandValue < toWinGame) {
+      //   myOutputValue = `Player, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
+      //   return myOutputValue;
+      // }
+
       var playerHandDisplayed = convertPlayerHandToString(playerHand);
       console.log("This is player hand after 1 hit", playerHand);
       // myOutputValue = `Player, this is your hand ${playerHandDisplayed} `;
