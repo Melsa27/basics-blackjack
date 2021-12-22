@@ -130,6 +130,7 @@ var calculateTotalDealerHandValue = function (dealerHand) {
 
 var main = function (input) {
   var myOutputValue = "";
+
   if (pointsToStart > 0) {
     if (currentGameMode == gameMode_Name) {
       //set the name
@@ -300,7 +301,7 @@ var main = function (input) {
     resetGame();
     var myImage =
       '<img src="https://c.tenor.com/1mTPXADa0yMAAAAi/cry-miss.gif"/>';
-    return `YOU HAVE NO POINTS LEFT! HOW IS THAT POSSIBLE!? <br>Fun Fact: The odds of this happening are 1 in 510! <br>Better luck next time ... and I will stay away from any form of gambling if I am you. #JustSaying <br><br><center>${myImage} <I>Please refresh page to start new game`;
+    return `<b>YOU HAVE NO POINTS LEFT! HOW IS THAT POSSIBLE!?</b> <br>Fun Fact: The odds of this happening are 1 in 510! <br>Better luck next time ... and I will stay away from any form of gambling if I am you. #JustSaying <br><br><center>${myImage} <I>Please refresh page to start new game`;
   }
 };
 
