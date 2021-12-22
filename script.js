@@ -185,7 +185,9 @@ var main = function (input) {
         var myImage =
           '<img src="https://c.tenor.com/sjnrOgJ_uagAAAAd/cute-cat-crying.gif"/>';
         return (myOutputValue = `<b>Dealer</b> has <b>Blackjack</b> and wins! GAME OVER! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br> GAME OVER! Please <b>refresh page</b> to play again!`);
-      } else {
+      }
+
+      if (playerHasBlackJack == false && dealerHasBlackJack == false) {
         //no blackjack, games continue
         var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
         var totalDealerHandValue = calculateTotalDealerHandValue(dealerHand);
@@ -221,7 +223,7 @@ var main = function (input) {
           var myImage =
             '<img src="https://c.tenor.com/KayBlLo95RoAAAAd/peach-cat.gif"/>';
 
-          myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
+          myOutputValue = `${userName}, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].name} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
           return myOutputValue;
         }
 
@@ -272,7 +274,7 @@ var main = function (input) {
         var myImage =
           '<img src="https://c.tenor.com/pJNWy-sz-fEAAAAj/peach-cat-crying.gif"/>';
 
-        myOutputValue = `<b>Dealer wins!</b> <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
+        myOutputValue = `<b>Dealer wins with ${totalDealerHandValue}!</b> <br> ${getCardsOutput()} <br><br>Total Points:${pointsToStart} <br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
       }
       if (totalDealerHandValue < 21 && totalPlayerHandValue < 21) {
         if (totalPlayerHandValue == totalDealerHandValue) {

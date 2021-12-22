@@ -24,7 +24,7 @@
       sizes="16x16"
       href="https://ra-web-files.s3.ap-southeast-1.amazonaws.com/all/favicons/favicon-16x16.png?v=2"
     />
-    <link rel="manifest" href="/site.webmanifest?v=2" />
+    <!-- <link rel="manifest" href="/site.webmanifest?v=2" /> -->
     <link
       rel="mask-icon"
       href="https://ra-web-files.s3.ap-southeast-1.amazonaws.com/all/favicons/safari-pinned-tab.svg?v=2"
@@ -100,9 +100,13 @@
         background: rgb(238,174,202);
 background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
         color: black; /* sets the font color */
-       
-       background-color: rgb(238,174,202);
-background-color: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+
+        background-color: rgb(238, 174, 202);
+        background-color: radial-gradient(
+          circle,
+          rgba(238, 174, 202, 1) 0%,
+          rgba(148, 187, 233, 1) 100%
+        );
         background-image: url("https://c.tenor.com/uvt6ybu_JtIAAAAj/hello-kitty-and-her-unicorn.gif"); /* The image used */
         background-position: center; /* Center the image */
         background-repeat: no-repeat; /* Do not repeat the image */
@@ -121,7 +125,6 @@ background-color: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,2
       }
 
       #container {
-
         background-color: rgb(230, 84, 108);
         margin: 40px auto;
         max-width: 800px;
@@ -178,8 +181,6 @@ background-color: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,2
       />
     </h1>
     <h1 class="header">♣️ Cute Casino Blackjack ♠️</h1>
-   
-
 
     <div id="container">
       <p>Input:</p>
@@ -188,12 +189,15 @@ background-color: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,2
       <button id="submit-button">Submit</button>
       <p>Output:</p>
       <div id="output-div">
-        Hi! Please key in your name! 
-        <center> <img 
-    src= "https://c.tenor.com/lUFliafCu_MAAAAd/hello.gif"/></center>
+        Hi! Please key in your name!
+        <center>
+          <img src="https://c.tenor.com/lUFliafCu_MAAAAd/hello.gif" />
+        </center>
       </div>
-     <!-- <div> <div class="tenor-gif-embed" data-postid="15533222" data-share-method="host" data-aspect-ratio="1.23552" data-width="100%"><a href="https://tenor.com/view/hello-bear-hello-kitty-hi-wink-gif-15533222">Hello Bear GIF</a>from <a href="https://tenor.com/search/hello-gifs">Hello GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+    </div>
+    <!-- <div> <div class="tenor-gif-embed" data-postid="15533222" data-share-method="host" data-aspect-ratio="1.23552" data-width="100%"><a href="https://tenor.com/view/hello-bear-hello-kitty-hi-wink-gif-15533222">Hello Bear GIF</a>from <a href="https://tenor.com/search/hello-gifs">Hello GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
     </div> -->
+
     <!-- Import program logic -->
     <script src="script.js"></script>
     <!-- Define button click functionality -->
