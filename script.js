@@ -28,7 +28,7 @@ var gameOver = false;
 // The dealer has to hit if their hand is below 17.
 var dealerHitThreshold = 17;
 //Hit 21 to win
-// var toWinGame = 21;
+var toWinGame = 21;
 
 // -----Game Functions --------//
 //1 ----function to check for blackJack---//
@@ -191,26 +191,26 @@ var main = function (input) {
   } else if (currentGameMode == gameMode_hitOrStand) {
     console.log("game mode 2", currentGameMode);
     // validation
-    if (input !== "h" && input !== "s") {
+    if (input !== "h" && input !== "H" && input !== "s" && input !== "S") {
       return 'Please input either "h" for hit or "s" for stand as possible moves';
     }
     // player hit or stand -------------------------------------------------
-    if (input == "h") {
+    if (input == "h" || input == "H") {
       playerHand.push(deck.pop());
       var playerHandDisplayed = convertPlayerHandToString(playerHand);
 
-      //_____this part does not work______//
-      //--------if under 21, then hit again - return if they want to hit or stand again
-      // if (totalPlayerHandValue < toWinGame) {
-      //   myOutputValue = `Player, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
-      //   return myOutputValue;
-      // }
+      //--------if under 21 after throwing another card - return if they want to hit or stand again
+      var totalPlayerHandValue = calculateTotalPlayerHandValue(playerHand);
+      if (totalPlayerHandValue < toWinGame) {
+        myOutputValue = `Player, this is your hand: ${playerHandDisplayed}.  You are at ${totalPlayerHandValue} right now! <br><br> This is one of the Dealer's card: ${dealerHand[1].rank} of ${dealerHand[1].suit} . <br><br><b> Please input either "h" for hit or "s" for stand, then press Submit</b> <br><br><center>${myImage}</center>`;
+        return myOutputValue;
+      }
 
       var playerHandDisplayed = convertPlayerHandToString(playerHand);
       console.log("This is player hand after 1 hit", playerHand);
       // myOutputValue = `Player, this is your hand ${playerHandDisplayed} `;
     }
-    if (input == "s") {
+    if (input == "s" || input == "S") {
       var playerHandDisplayed = convertPlayerHandToString(playerHand);
       console.log("This is player hand after 1 hit", playerHand);
       // myOutputValue = `Player, this is your hand ${playerHandDisplayed} `;
@@ -233,24 +233,30 @@ var main = function (input) {
     if (totalPlayerHandValue > 21 && totalDealerHandValue <= 21) {
       var myImage =
         '<img src="https://c.tenor.com/M_5Qg9ok3HQAAAAd/cat-pout.gif"/>';
-      myOutputValue = `<b>Dealer wins</b> with ${totalDealerHandValue}! Player bust with ${totalPlayerHandValue}. <br><br> <center> ${myImage}   <br><br> Press "submit" to have another go!`;
+      myOutputValue = `<b>Dealer wins</b> with ${totalDealerHandValue}! Player bust with ${totalPlayerHandValue}.<br> ${getCardsOutput()}<br><br> <center> ${myImage}   <br><br> Press "submit" to have another go!`;
     }
     if (totalPlayerHandValue <= 21 && totalDealerHandValue > 21) {
       var myImage =
         '<img src="https://c.tenor.com/906nGAL7Xw0AAAAi/mochi-peachcat-cute-cat.gif"/>';
 
-      myOutputValue = `<b>Player wins</b> with ${totalPlayerHandValue}! Dealer bust with ${totalDealerHandValue}. <br><br> <center> ${myImage}     <br><br> Press "submit" to have another go!`;
+      myOutputValue = `<b>Player wins</b> with ${totalPlayerHandValue}! Dealer bust with ${totalDealerHandValue}. <br> ${getCardsOutput()} <br><br> <center> ${myImage}     <br><br> Press "submit" to have another go!`;
     }
     if (totalPlayerHandValue > 21 && totalDealerHandValue > 21) {
       var myImage =
         '<img src="https://c.tenor.com/akjDxmuk7o4AAAAd/cute-cat.gif"/>';
-      myOutputValue = `BOOOOOM! No one wins! Dealer bust with ${totalDealerHandValue}. Player bust with ${totalPlayerHandValue}! <br><br> <center> ${myImage} <br><br> Press "submit" to have another go!`;
+      myOutputValue = `BOOOOOM! No one wins! Dealer bust with ${totalDealerHandValue}. Player bust with ${totalPlayerHandValue}! <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br><br> Press "submit" to have another go!`;
+    }
+    if (totalDealerHandValue == 21 && totalPlayerHandValue < 21) {
+      var myImage =
+        '<img src="https://c.tenor.com/pJNWy-sz-fEAAAAj/peach-cat-crying.gif"/>';
+
+      myOutputValue = `<b>Dealer wins!</b> <br> ${getCardsOutput()} <br><br> <center> ${myImage} <br><br> Press "submit" to have another go!</center>`;
     }
     if (totalDealerHandValue < 21 && totalPlayerHandValue < 21) {
       if (totalPlayerHandValue == totalDealerHandValue) {
         var myImage =
           '<img src="https://c.tenor.com/WiQQRwR2QFAAAAAj/cute-panda.gif"/>';
-        myOutputValue = `<b>Its a tie!!</B> <br> ${getCardsOutput()}<br><br> <center> ${myImage} Press "submit" to have another go!</center>  `;
+        myOutputValue = `<b>Its a tie!!</B> <br> ${getCardsOutput()} <br><br> <center> ${myImage} Press "submit" to have another go!</center>  `;
       }
       if (totalPlayerHandValue > totalDealerHandValue) {
         var myImage =
@@ -278,7 +284,7 @@ function makeDeck() {
   // Initialise an empty deck array
   var cardDeck = [];
   // Initialise an array of the 4 suits in our deck. We will loop over this array.
-  var suits = ["Hearts ♥", "Diamonds ♦", "Clubs ♣", "Spades ♠"];
+  var suits = ["♥", "♦", "♣", "♠"];
 
   // Loop over the suits array
   var suitIndex = 0;
@@ -402,10 +408,10 @@ var convertDealerHandToString = function (dealerHand) {
 var getCardsOutput = function () {
   return `Player has: ${convertPlayerHandToString(
     playerHand
-  )} with sum ${calculateTotalPlayerHandValue(playerHand)}. <br>
+  )} . Total: ${calculateTotalPlayerHandValue(playerHand)}. <br>
     Dealer has: ${convertDealerHandToString(
       dealerHand
-    )} with sum ${calculateTotalDealerHandValue(dealerHand)}.`;
+    )} . Total: ${calculateTotalDealerHandValue(dealerHand)}.`;
 };
 
 var resetGame = function () {
