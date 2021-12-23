@@ -139,7 +139,7 @@ var main = function (input) {
       //now that we have the name, switch the mode
       currentGameMode = gameMode_gameStart;
       var myImage = '<img src="https://c.tenor.com/sW_xgchdo6kAAAAj/nya.gif"/>';
-      return (myOutputValue = `Hello ${userName}! Click <b>submit</b> to start the game! <br><br><b><u><center>Rules</u></b><br>You start with ${pointsToStart} points. <br>Winning will add 10 points and losing will deduct 10 points.<br> If anyone gets 21, its sudden death, person with 21 wins all. Game over! <br><br> ${myImage}</center>`);
+      return (myOutputValue = `Hello ${userName}! Click <b>submit</b> to start the game! <br><br><b><u><center>Rules</u></b><br>Objective is to get 21 points or as close to 21 as possible without exceeding. <br>You start with ${pointsToStart} points. <br>Winning will add 10 points and losing will deduct 10 points.<br> If anyone gets 21, its sudden death, person with 21 wins all. Game over! <br><br> ${myImage}</center>`);
     }
 
     //When click submit at the start
